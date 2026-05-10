@@ -13,20 +13,55 @@ def read(filename:str):
     if not os.path.isfile(filename):
         raise FileNotFoundError(f'[file_utils] Filename {filename} does not exist!')
 
-    #freqs
-    n_freqs = get_n_freqs(filename)
+    file_type = [".csv", ".xls", ".xlsx"]
 
-    #process the raw data output  into a custom data structure
-    raw_data = pd.read_csv(
-        filename,
-        delimiter=",",
-        skiprows=5,
-        encoding="utf-16"
-    ).to_numpy()
+    ext = os.path.splitext(filename)[1].lower()
+    sheets = []
 
-    raw_data = raw_data[:, :-1]
+    if ext == ".csv":
+        # process the raw data output  into a custom data structure
+        raw_data = pd.read_csv(
+            filename,
+            delimiter=",",
+            skiprows=5,
+            encoding="utf-16"
+        ).to_numpy()
 
-    data = data_types.SpectroscopyData(raw_data, n_freqs)
+        base = os.path.basename(filename)
+        file, ext = os.path.splitext(base)
+        sheets.append(file)
+        raw_data_all = raw_data[:, :-1]
+        n_freqs = get_n_freqs(filename)
+
+    elif ext in [".xls", ".xlsx"]:
+        raw_data = pd.ExcelFile(filename)
+        sheet_names = raw_data.sheet_names
+        n_sheets = len(sheet_names)
+
+        raw_data_all = []
+
+
+        for i in range(n_sheets):
+            raw_data = pd.read_excel(
+                filename,
+                sheet_name=i
+            ).to_numpy()
+
+            if raw_data.size==0:
+                print(f"[file_utils] Sheet {sheet_names[i]} is empty.")
+                continue
+            sheets.append(sheet_names[i])
+            raw_data = raw_data[1:, :]
+            raw_data_all.append(raw_data)
+
+        raw_data_all = np.array(raw_data_all)
+        n_freqs = len(raw_data_all[0,:,0])
+
+    else:
+        raise TypeError(f'[filew_utils] Unknown file type! Curr. type = {type(file_type)}')
+
+
+    data = data_types.SpectroscopyData(raw_data_all, n_freqs, ext, sheets)
 
     return data
 

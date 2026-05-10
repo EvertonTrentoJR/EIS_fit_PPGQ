@@ -26,31 +26,35 @@ class LinearKramersKronig:
         self.z_meas_real = data_medium.Z_real
         self.z_meas_imag = -data_medium.Z_imag
 
-        z_meas = data_medium.Z_real + 1j*data_medium.Z_imag #complex impedance
-        self.Z_meas = np.asarray(z_meas, dtype=complex).ravel()
-
         f_Hz = np.asarray(self.freqs, float).ravel()
-        # M (chosen number of RC elements), Z_fit (KK-consistent), res_real, res_imag
-        self.M,  self.mu,  self.Z_fit,  self.res_real,  self.res_imag = linKK(f_Hz, self.Z_meas, self.c, self.max_iter, self.fit_type, self.add_capacitor)
-        self.chi_square = self.compute_chi_square()
+        z_meas = data_medium.Z_real + 1j * data_medium.Z_imag  # complex impedance
+        Z_meas_arr = np.atleast_2d(z_meas)
 
-        # handy scalar metrics
-        self.rms_rel_re = np.sqrt(np.mean( self.res_real ** 2))
-        self.rms_rel_im = np.sqrt(np.mean( self.res_imag ** 2))
+        for i in range(Z_meas_arr.shape[0]):
 
-        #residue test < 1%
+            print(f'[LinerKramersKronig] \nLinKK test for: {data_medium.sheet_names[i]}')
+            self.Z_meas = np.asarray(Z_meas_arr[i,:], dtype=complex).ravel()
+            # M (chosen number of RC elements), Z_fit (KK-consistent), res_real, res_imag
+            self.M,  self.mu,  self.Z_fit,  self.res_real,  self.res_imag = linKK(f_Hz, self.Z_meas, self.c, self.max_iter, self.fit_type, self.add_capacitor)
+            self.chi_square = self.compute_chi_square()
 
-        self.plotLinkk()
+            # handy scalar metrics
+            self.rms_rel_re = np.sqrt(np.mean( self.res_real ** 2))
+            self.rms_rel_im = np.sqrt(np.mean( self.res_imag ** 2))
 
-        if verbose:
-            print(f'[LinerKramersKronig] Data validity test:')
-            if self.chi_square > 1e-2:
-                print(f'Linear Kramers-Kronig test failed: x² = {self.chi_square}')
-                print()
-            else:
-                print(f'Linear Kramers-Kronig test passed: x² = {self.chi_square}')
-                print(f'Optimal M RC components = {self.M}')
-                print()
+            #residue test < 1%
+
+            self.plotLinkk(title=data_medium.sheet_names[i])
+
+            if verbose:
+                print(f'[LinerKramersKronig] Data validity test for {data_medium.sheet_names[i]}:')
+                if self.chi_square > 1e-2:
+                    print(f': Linear Kramers-Kronig test failed: x² = {self.chi_square}')
+                    print()
+                else:
+                    print(f'Linear Kramers-Kronig test passed: x² = {self.chi_square}')
+                    print(f'Optimal M RC components = {self.M}')
+                    print()
 
     def compute_chi_square(self):
         '''
@@ -77,7 +81,7 @@ class LinearKramersKronig:
 
         return np.sum(chi_square)
 
-    def plotLinkk(self):
+    def plotLinkk(self, title=None):
 
         freqs =  np.asarray(self.freqs, float).ravel()
         Z_meas = np.asarray(self.Z_meas, complex).ravel()
@@ -91,7 +95,7 @@ class LinearKramersKronig:
         plt.plot(Z_fit.real, -Z_fit.imag, "-", label=f"KK fit (M={self.M})")
         plt.xlabel("Z' [Ω]")
         plt.ylabel("-Z'' [Ω]")
-        plt.title("Nyquist - Fit Linear Kramers-Kronig")
+        plt.title(f"{title}: Nyquist - Fit Linear Kramers-Kronig")
         plt.grid(True)
         plt.legend()
         plt.tight_layout()
@@ -115,7 +119,7 @@ class LinearKramersKronig:
         plt.axhline(0.0, linewidth=1)
         plt.xlabel("Frequency [Hz]")
         plt.ylabel("Relative residual [-]")
-        plt.title(" Residuals - Linear Kramers-Kronig")
+        plt.title(f"{title}: Residuals - Linear Kramers-Kronig")
         plt.grid(True, which="both")
         plt.legend()
         plt.tight_layout()

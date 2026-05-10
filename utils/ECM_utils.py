@@ -1,6 +1,7 @@
 import numpy as np
 import re
 import matplotlib.pyplot as plt
+from collections import OrderedDict
 
 class CircuitParams:
     """
@@ -34,6 +35,8 @@ class CircuitParams:
 
         if self.pos != len(self.tokens):
             raise ValueError("Invalid circuit: extra tokens found")
+
+        self.bounds()
 
     def circuit_tree(self):
         values = []  # elements and partial trees
@@ -155,56 +158,71 @@ class CircuitParams:
             self.param_names.append(name)
             return ("W", name)
 
+    def bounds(self):
+        self.bound = []
+        for param in self.param_names:
+            # Alpha parameters
+            if "alpha" in param.lower():
+                bds = (0, 1)
+            else:
+                bds = (0, 10)
+            self.bound.append(bds)
 
 class CircuitEvaluate:
-    def __init__(self, freqs = np.array, params = np.array, tree = None):
-     '''
+    def __init__(self, freqs: np.ndarray, ecm , params_value: np.ndarray, verbose:bool=False):
+        '''
 
-     :param freqs: list of frequencies
-     :param params: list of initial parameters
-     :param tree: circuit tree
-     '''
+        :param freqs: list of frequencies
+        :param params: list of initial parameters
+        :param tree: circuit tree
+        '''
 
+        self.ecm = ecm
+        self.verbose = verbose
+        self.params_value = params_value
+        self.param_names = self.ecm.param_names
+        self.params =dict(zip(self.param_names, self.params_value))
 
-     self.Freqs = np.asarray(freqs, dtype=float)
-     self.W = 2 * np.pi * self.Freqs
-     self.params = params
-     self.tree = tree
-     self.Z_ECM = self.eval_node(self.tree)
+        self.Freqs = np.asarray(freqs, dtype=float)
+        self.W = 2 * np.pi * self.Freqs
+        self.tree = self.ecm.tree
 
-     Z_ECM_real = np.real(self.Z_ECM)
-     Z_ECM_imag = np.imag(self.Z_ECM)
-     Z_ECM_mag = np.abs(self.Z_ECM)
-     Z_ECM_phase = np.angle(self.Z_ECM, deg=True)
+        self.Z_ECM = self.eval_node(self.tree)
 
-     fig, ax = plt.subplots(2, 1, figsize=(8, 5))
-     fig.suptitle("ECM - Frequency Evaluation")
-     ax1, ax2 = ax
-     # --- Bode magnitude ---
-     ax1.semilogx(freqs, Z_ECM_mag)
-     ax1.set_xlabel("Frequency (Hz)")
-     ax1.set_ylabel("|Z| (Ohm)")
-     ax1.set_title("Bode Magnitude")
-     ax1.grid(True, which="both")
-     # --- Bode phase ---
-     ax2.semilogx(freqs, Z_ECM_phase)
-     ax2.set_xlabel("Frequency (Hz)")
-     ax2.set_ylabel("Phase (deg)")
-     ax2.set_title("Bode Phase")
-     ax2.grid(True, which="both")
-     plt.tight_layout()
-     plt.show()
+        if self.verbose:
+             Z_ECM_real = np.real(self.Z_ECM)
+             Z_ECM_imag = np.imag(self.Z_ECM)
+             Z_ECM_mag = np.abs(self.Z_ECM)
+             Z_ECM_phase = np.angle(self.Z_ECM, deg=True)
 
-     # Nyquist
-     plt.figure(figsize=(6, 6))
-     plt.suptitle("ECM - Frequency Evaluation")
-     plt.plot(Z_ECM_real, -Z_ECM_imag)
-     plt.xlabel("Z' (Ohm)")
-     plt.ylabel("-Z'' (Ohm)")
-     plt.title("Nyquist Plot")
-     plt.grid(True)
-     plt.tight_layout()
-     plt.show()
+             fig, ax = plt.subplots(2, 1, figsize=(8, 5))
+             fig.suptitle("ECM - Frequency Evaluation")
+             ax1, ax2 = ax
+             # --- Bode magnitude ---
+             ax1.semilogx(freqs, Z_ECM_mag)
+             ax1.set_xlabel("Frequency (Hz)")
+             ax1.set_ylabel("|Z| (Ohm)")
+             ax1.set_title("Bode Magnitude")
+             ax1.grid(True, which="both")
+             # --- Bode phase ---
+             ax2.semilogx(freqs, Z_ECM_phase)
+             ax2.set_xlabel("Frequency (Hz)")
+             ax2.set_ylabel("Phase (deg)")
+             ax2.set_title("Bode Phase")
+             ax2.grid(True, which="both")
+             plt.tight_layout()
+             plt.show()
+
+             # Nyquist
+             plt.figure(figsize=(6, 6))
+             plt.suptitle("ECM - Frequency Evaluation")
+             plt.plot(Z_ECM_real, -Z_ECM_imag)
+             plt.xlabel("Z' (Ohm)")
+             plt.ylabel("-Z'' (Ohm)")
+             plt.title("Nyquist Plot")
+             plt.grid(True)
+             plt.tight_layout()
+             plt.show()
 
     def eval_node(self, node):
         """
