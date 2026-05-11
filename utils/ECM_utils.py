@@ -178,6 +178,7 @@ class CircuitEvaluate:
         '''
 
         self.ecm = ecm
+        self.circuit = self.ecm.circuit
         self.verbose = verbose
         self.params_value = params_value
         self.param_names = self.ecm.param_names
@@ -196,7 +197,7 @@ class CircuitEvaluate:
              Z_ECM_phase = np.angle(self.Z_ECM, deg=True)
 
              fig, ax = plt.subplots(2, 1, figsize=(8, 5))
-             fig.suptitle("ECM - Frequency Evaluation")
+             fig.suptitle(f"ECM - Frequency Evaluation \n{self.circuit}")
              ax1, ax2 = ax
              # --- Bode magnitude ---
              ax1.semilogx(freqs, Z_ECM_mag)
@@ -215,7 +216,7 @@ class CircuitEvaluate:
 
              # Nyquist
              plt.figure(figsize=(6, 6))
-             plt.suptitle("ECM - Frequency Evaluation")
+             plt.suptitle(f"ECM - Frequency Evaluation \n{self.circuit}")
              plt.plot(Z_ECM_real, -Z_ECM_imag)
              plt.xlabel("Z' (Ohm)")
              plt.ylabel("-Z'' (Ohm)")

@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="81cf483c-1d35-45f8-91e7-d546315e6e0a" name="Changes" comment="commit that shit">
       <change beforePath="$PROJECT_DIR$/handle_impedance_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/handle_impedance_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/fitting_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/fitting_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/ECM_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/ECM_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,7 +225,7 @@
       <workItem from="1778349631427" duration="878000" />
       <workItem from="1778421303659" duration="229000" />
       <workItem from="1778421958954" duration="13957000" />
-      <workItem from="1778441905409" duration="16467000" />
+      <workItem from="1778441905409" duration="17095000" />
     </task>
     <task id="LOCAL-00001" summary="[framework] Handling EIS data">
       <option name="closed" value="true" />
@@ -299,7 +299,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778454621680</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="commit that shit">
+      <option name="closed" value="true" />
+      <created>1778463383006</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1778463383006</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -110,36 +110,14 @@ circuit= "(R1 +(R2//CPE1)+(R3//CPE2))" # prof paula dados everton .xlsx
 ECM_Params = ECM_utils.CircuitParams(circuit)
 
 print("Circuit:")
-print(circuit)
+print(ECM_Params.circuit)
 print("Parameter names:")
 print(ECM_Params.param_names[:])
 
 # print symnbols Z(omega) + circuit
 #_______________________________________________________________________________________________________________________
 # Evaluate the frequency response of the impedance for the ECM
-
 # define parameter values
-# params = {
-#     "R1": 100.0,
-#     "R2": 300.0,
-#     "L1":1e-6,
-#     "C1": 1e-6,
-#     "C2": 1e-6,
-#     "Q1": 2e-4,
-#     "alpha1": 0.85,
-#     "W1": 10.0
-# }
-
-# params ={
-#     "R1":100.0,
-#     "R2": 100.0,
-#     "Q1": 2e-4 ,
-#     "alpha1": 0.8,
-#     "R3" : 100.0,
-#     "Q2":2e-4 ,
-#     "alpha2": 0.8,
-# }
-
 param_value = np.array([100.0,100.0,2e-4 ,0.8,100.0,2e-4 ,0.8])
 ECM_Z = ECM_utils.CircuitEvaluate(freqs, ECM_Params, param_value, verbose=True)
 
