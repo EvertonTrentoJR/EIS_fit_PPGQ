@@ -1,7 +1,7 @@
 from utils import file_utils, linKK, ECM_utils, fitting_utils
 import numpy as np
-# import matplotlib
-# matplotlib.use('TkAgg')
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 #_______________________________________________________________________________________________________________________
