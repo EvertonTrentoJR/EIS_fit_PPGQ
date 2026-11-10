@@ -31,7 +31,7 @@ def read(filename:str, flip=True):
         base = os.path.basename(filename)
         file, ext = os.path.splitext(base)
         sheets.append(file)
-        raw_data_all = raw_data[:, :-1]
+        raw_data_all = raw_data[:-1, :-1]
         n_freqs = get_n_freqs(filename)
 
     elif ext in [".xls", ".xlsx"]:

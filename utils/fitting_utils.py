@@ -70,6 +70,7 @@ class Circuit_fitting:
 
         #validate "scaling_array"
         Z_meas_arr = np.atleast_2d(self.z_meas)
+        scaling_array = np.atleast_2d(scaling_array)
         if len(scaling_array[0,:]) != len(initial_guess):
             raise ValueError(f'[EquivalentCircuit] Length of the scaling array do not match the length of the initial guess! {len(scaling_array)} != {len(initial_guess)}')
         if scaling_array.shape[0] != Z_meas_arr.shape[0]:

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 #_______________________________________________________________________________________________________________________
 # READ DATA .XLSX
-spec_obj = file_utils.read('./data/Dados Everton.xlsx')
+spec_obj = file_utils.read('data/Dados Everton.xlsx')
 freqs = spec_obj.freq
 z_real = spec_obj.Z_real
 z_imag = spec_obj.Z_imag #imaginary impedance is negative
@@ -57,7 +57,7 @@ plt.show()
 #_______________________________________________________________________________________________________________________
 # Validate EIS data - by Linear Krammers Kroning
 
-linkk_obj = linKK.LinearKramersKronig(spec_obj, c=0.1, max_iter=50, add_capacitor=True, verbose=True)
+linkk_obj = linKK.LinearKramersKronig(spec_obj, c=0.1, max_iter=50, add_capacitor=True, verbose=False)
 if linkk_obj.chi_square > 1e-2:
     raise ValueError(f'Linear Kramers-Kronig test failed: x² = {linkk_obj.chi_square}')
 
