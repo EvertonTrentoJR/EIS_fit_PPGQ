@@ -61,6 +61,7 @@ EIS_fit_PPGQ/
 | `fit_impedance_data.py` | Main script for impedance fitting workflow |
 | `requirements.txt` | Python dependencies required for the project |
 
+
 ---
 
 # 2. Methodology
